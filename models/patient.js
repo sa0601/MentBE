@@ -1,4 +1,5 @@
 const mongoose = require('../db/connection.js');
+const Ptlogin = require('./ptLogin.js');
 
 const patientSchema = new mongoose.Schema({
     pID: String,

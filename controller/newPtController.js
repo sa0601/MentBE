@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Patient = require("../models/patient"); // Include the Patient model
-const Ptlogin = require("../models/ptLogin"); // Include the Ptlogin model for login creation
+const Ptlogin = require("../models/ptLogin"); // Include the Ptlogin model
 const bcrypt = require("bcrypt");
 
 // SHOW all patients
@@ -29,6 +29,7 @@ router.get("/:id", async (req, res) => {
 
 // CREATE a new patient
 router.post("/register", async (req, res) => {
+  console.log(req.body);
     try {
       // Extract patient details and login details from req.body
       const patientData = req.body.patient;
@@ -53,8 +54,9 @@ router.post("/register", async (req, res) => {
   
       res.json(savedPatient);
     } catch (error) {
-      res.status(400).json(error);
-    }
+      console.error("Error creating patient:", error);
+      res.status(500).json({ error: error.toString() });
+  }
   });
 
 // UPDATE a Patient
