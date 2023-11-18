@@ -57,25 +57,23 @@ router.get("/:id", async (req, res) => {
 
 // LOGIN a patient
 router.post("/login", async (req, res) => {
-  try {
-    let ptLoginToAuthenticate = await Ptlogin.findOne({ username: req.body.username });
-    if (ptLoginToAuthenticate) {
-      let match = await bcrypt.compare(req.body.password, ptLoginToAuthenticate.password);
-      if (match) {
-        // Assuming you're using sessions
-        req.session.patientId = ptLoginToAuthenticate._id;
-        req.session.name = ptLoginToAuthenticate.name;
-        res.json("Patient logged in successfully");
-      } else {
-        res.json("Wrong password");
-      }
-    } else {
-      res.status(404).json("Patient not found");
+    try {
+        const { username, password } = req.body;
+        const patientLogin = await Ptlogin.findOne({ username: username });
+
+        if (patientLogin && await bcrypt.compare(password, patientLogin.password)) {
+            // Assuming you are using sessions for tracking login status
+            req.session.patientId = patientLogin._id;
+            req.session.name = patientLogin.name;
+            res.json({ message: "You are logged in", isAuthenticated: true });
+        } else {
+            res.status(401).json({ message: "Invalid credentials", isAuthenticated: false });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Error during authentication", error: error.message });
     }
-  } catch (error) {
-    res.status(400).json(error);
-  }
 });
+
 
 // UPDATE a Patient Login
 router.put("/:id", async (req, res) => {
