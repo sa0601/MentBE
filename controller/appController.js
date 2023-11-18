@@ -21,12 +21,9 @@ router.get("/appointments", async (req, res) => {
 router.get("/:appointmentId", async (req, res) => {
     try {
         const appointment = await Appointment.findById(req.params.appointmentId)
-                                           .populate('patient'); // Populate the entire patient object
+                                               .populate('patient'); // Populate the entire patient object
         if (appointment) {
-            res.json({
-                ...appointment.toObject(),
-                patient: appointment.patient // Include the full patient object in the response
-            });
+            res.json(appointment);
         } else {
             res.status(404).json({ message: "Appointment not found" });
         }
