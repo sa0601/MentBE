@@ -7,12 +7,19 @@ const cors = require('cors');
 const patController = require('./controller/patController');
 const empController = require('./controller/empController');
 const newPtController = require('./controller/newPtController');
+const session = require('express-session');
 
 //MIDDLEWARE
 app.use(cors())
 app.use(morgan("tiny"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true } // Set 'secure: true' if using https
+  }));
 
 app.use('/patients', patController);
 app.use('/employees', empController);

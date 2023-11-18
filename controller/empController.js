@@ -36,21 +36,22 @@ router.post("/signup", async (req, res) => {
 
 // LOGIN an employee
 router.post("/login", async (req, res) => {
-  console.log(req.body);
-  let employeeToLogin = await Employee.findOne({ username: req.body.username });
-  if (employeeToLogin) {
-    bcrypt.compare(req.body.password, employeeToLogin.password, (err, result) => {
-      if (result) {
+    try {
+      const { username, password } = req.body;
+      const employee = await Employee.findOne({ username: username });
+  
+      if (employee && await bcrypt.compare(password, employee.password)) {
         // Assuming you are using sessions for tracking login status
-        req.session.employeeId = employeeToLogin._id;
-        req.session.name = employeeToLogin.name;
-        res.json("You are logged in");
+        req.session.employeeId = employee._id;
+        req.session.name = employee.name;
+        res.json({ message: "You are logged in", isAuthenticated: true });
       } else {
-        res.json("Wrong password");
+        res.status(401).json({ message: "Invalid credentials", isAuthenticated: false });
       }
-    });
-  }
-});
+    } catch (error) {
+      res.status(500).json({ message: "Error during authentication", error: error.message });
+    }
+  });
 
 // UPDATE an Employee
 router.put("/:id", async (req, res) => {
