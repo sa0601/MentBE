@@ -7,6 +7,7 @@ const cors = require('cors');
 const patController = require('./controller/patController');
 const empController = require('./controller/empController');
 const newPtController = require('./controller/newPtController');
+const appController = require('./controller/appController');
 const session = require('express-session');
 
 //MIDDLEWARE
@@ -24,6 +25,7 @@ app.use(session({
 app.use('/patients', patController);
 app.use('/employees', empController);
 app.use('/newpatients', newPtController);
+app.use('/appointments', appController);
 
 
 app.get ('/', (req, res) => {
